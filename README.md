@@ -7,11 +7,12 @@ See `ParMandel/res.png`.
 
 ## TODO
 
-- [ ] rename classes to with more appropriate names
-- [ ] more colors
+- [X] rename classes to with more appropriate names
+- [X] more colors
+- [ ] add command line parameters
 - [ ] implement Runnable interface
 
 ## References:
-
-https://www.youtube.com/watch?v=6z7GQewK-Ks&t=247s
-
+ 
+How to: https://www.youtube.com/watch?v=6z7GQewK-Ks&t=247s
+Colors: https://stackoverflow.com/questions/29664389/adding-color-layers-to-the-mandelbrot-set
