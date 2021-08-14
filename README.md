@@ -7,9 +7,9 @@ See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the wi
 
 ## TODO
 
-- [X] rename classes to with more appropriate names
+- [X] more appropriate class names
 - [X] more colors
-- [ ] add command line parameters
+- [X] add command line parameters
 - [ ] implement Runnable interface
 
 ## References:

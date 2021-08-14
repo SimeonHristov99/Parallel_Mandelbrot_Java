@@ -1,4 +1,4 @@
-package solution;
+package singleThread;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
