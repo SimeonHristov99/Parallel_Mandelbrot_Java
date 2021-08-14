@@ -3,10 +3,11 @@
 Generating the Mandelbrot set via the Thread class and Runnable interface in the Java programming language.
 
 ## Results
-See `res.png`.
+See `ParMandel/res.png`.
 
 ## TODO
 
+- [ ] rename classes to with more appropriate names
 - [ ] more colors
 - [ ] implement Runnable interface
 
