@@ -3,7 +3,7 @@
 Generating the Mandelbrot set via the Thread class and Runnable interface in the Java programming language.
 
 ## Results
-See `ParMandel/res.png`.
+See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the window.
 
 ## TODO
 
@@ -15,4 +15,5 @@ See `ParMandel/res.png`.
 ## References:
  
 How to: https://www.youtube.com/watch?v=6z7GQewK-Ks&t=247s
+
 Colors: https://stackoverflow.com/questions/29664389/adding-color-layers-to-the-mandelbrot-set
