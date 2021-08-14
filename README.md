@@ -2,6 +2,14 @@
 
 Generating the Mandelbrot set via the Thread class and Runnable interface in the Java programming language.
 
+## Quick start
+
+```console
+cd ParMandel
+./makeMe.sh
+./runMe.sh <numThreads> <granularity>
+```
+
 ## Results
 See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the window.
 
@@ -10,6 +18,7 @@ See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the wi
 - [X] more appropriate class names
 - [X] more colors
 - [X] add command line parameters
+- [ ] add profiling
 - [ ] implement Runnable interface
 
 ## References:
