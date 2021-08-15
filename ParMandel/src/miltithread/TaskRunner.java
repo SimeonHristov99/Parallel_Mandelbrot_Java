@@ -1,18 +1,14 @@
 package miltithread;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class TaskRunner {
-
-    private static final double minX = -0.8; // -2;
-    private static final double maxX = -0.3; // 2;
-
-    private static final double minY = 0.8; // 2;
-    private static final double maxY = 0.3; // -2;
-
     private static final int WIDTH = 3840;
     private static final int HEIGHT = 2160;
-    private static final int MAX_ITERATIONS = 256;
-    private static final int INFINITY = 16;
-
 
     public static void main(String[] args) {
 
@@ -37,44 +33,43 @@ public class TaskRunner {
         int numTasks = numThreads * granularity;
 
         System.out.printf(
-                "numTheads=%d - granularity=%d - numSubtasks=%d - rowsPerThread=%d\n",
-                numThreads, granularity, numTasks, (int) Math.ceil((double) WIDTH / numTasks)
+                "numTheads=%d - granularity=%d - numTasks=%d\n",
+                numThreads, granularity, numTasks
         );
 
-//        Thread[] threads = new Thread[numThreads];
-//
-//        for (Thread thread : threads) {
-//            thread = new Thread(new ParMandelRunnable());
-//        }
-//
-//        for (int i = 0; i < WIDTH; i++) {
-//            // The idea is to pass xStart, yStart, xEnd, yEnd (and maybe step)
-////            threads[i % numThreads].start();
-//        }
+        // pass xStart and numThreads
+        // when the thread finishes with the row it has it will advance by numThread steps
+        // it should advance only if currentRow + numThreads <= WIDTH
+        // therefore the for-loop has to only give the first numThreads rows
 
-//        for (int x = 0; x < WIDTH; x++) {
-//            for (int y = 0; y < HEIGHT; y++) {
-//                double translatedX = minX + (x * (maxX - minX)) / WIDTH;
-//                double translatedY = minY + (y * (maxY - minY)) / HEIGHT;
-//                double cx = translatedX;
-//                double cy = translatedY;
-//                int iterations = 0;
-//
-//                while (iterations < MAX_ITERATIONS) {
-//                    double trXX = translatedX * translatedX - translatedY * translatedY;
-//                    double trYY = 2 * translatedX * translatedY;
-//
-//                    translatedX = trXX + cx;
-//                    translatedY = trYY + cy;
-//
-//                    if (Math.abs(translatedX + translatedY) > INFINITY) {
-//                        break;
-//                    }
-//
-//                    ++iterations;
-//                }
-//            }
-//        }
+        BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
+        Graphics2D g2b = bi.createGraphics();
 
+        Thread[] threads = new Thread[numThreads];
+
+        for (int i = 0; i < numThreads; i++) {
+            ParMandelRunnable runnable = new ParMandelRunnable(i, numThreads, bi);
+            threads[i] = new Thread(runnable);
+            threads[i].start();
+        }
+
+        for (int i = 0; i < numThreads; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                System.out.println("ERROR");
+                e.printStackTrace();
+            }
+        }
+
+        g2b.drawRect(0, 0, WIDTH, HEIGHT);
+
+        try {
+            ImageIO.write(bi, "PNG", new File("res.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Done.");
     }
 }
