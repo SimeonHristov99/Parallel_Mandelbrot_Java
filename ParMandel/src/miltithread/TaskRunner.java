@@ -7,8 +7,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class TaskRunner {
-    private static final int WIDTH = 3840;
-    private static final int HEIGHT = 2160;
+
+    private static final int COLS = 3840;
+    private static final int ROWS = 2160;
 
     public static void main(String[] args) {
 
@@ -17,38 +18,30 @@ public class TaskRunner {
             System.exit(1);
         }
 
-        int numThreads = Integer.parseInt(args[0]);
-        int granularity = Integer.parseInt(args[1]);
-
+        final int numThreads = Integer.parseInt(args[0]);
         if (numThreads < 1) {
             System.out.println("ERROR: The number of threads was not a natural number");
             System.exit(1);
         }
 
+        final int granularity = Integer.parseInt(args[1]);
         if (granularity < 1) {
             System.out.println("ERROR: Granularity was not a natural number");
             System.exit(1);
         }
 
-        int numTasks = numThreads * granularity;
+        final int numTasks = granularity * numThreads;
+        final int rowsPerThread = (int) Math.ceil((double) ROWS / numTasks);
 
-        System.out.printf(
-                "numTheads=%d - granularity=%d - numTasks=%d\n",
-                numThreads, granularity, numTasks
-        );
+        System.out.printf("numThreads=%d - numTasks=%d - rowsPerThread=%d\n", numThreads, numTasks, rowsPerThread);
 
-        // pass xStart and numThreads
-        // when the thread finishes with the row it has it will advance by numThread steps
-        // it should advance only if currentRow + numThreads <= WIDTH
-        // therefore the for-loop has to only give the first numThreads rows
-
-        BufferedImage bi = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage bi = new BufferedImage(COLS, ROWS, BufferedImage.TYPE_3BYTE_BGR);
         Graphics2D g2b = bi.createGraphics();
 
         Thread[] threads = new Thread[numThreads];
 
         for (int i = 0; i < numThreads; i++) {
-            ParMandelRunnable runnable = new ParMandelRunnable(i, numThreads, bi);
+            ParMandelRunnable runnable = new ParMandelRunnable(i, numThreads, rowsPerThread, bi);
             threads[i] = new Thread(runnable);
             threads[i].start();
         }
@@ -57,19 +50,18 @@ public class TaskRunner {
             try {
                 threads[i].join();
             } catch (InterruptedException e) {
-                System.out.println("ERROR");
+                System.out.println("ERROR while joining");
                 e.printStackTrace();
             }
         }
 
-        g2b.drawRect(0, 0, WIDTH, HEIGHT);
-
+        g2b.drawRect(0, 0, COLS, ROWS);
         try {
             ImageIO.write(bi, "PNG", new File("res.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         System.out.println("Done.");
+
     }
 }

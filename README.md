@@ -19,6 +19,7 @@ See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the wi
 - [X] more colors
 - [X] add command line parameters
 - [X] implement Runnable interface (and put actual code in the run method)
+- [X] use granularity
 - [ ] add profiling
 
 ## References:

@@ -4,67 +4,73 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class ParMandelRunnable implements Runnable {
-    private static final double minX = -0.8; // -2;
-    private static final double maxX = -0.3; // 2;
+    private static final double minX = -0.8;
+    private static final double maxX = -0.3;
 
-    private static final double minY = 0.8; // 2;
-    private static final double maxY = 0.3; // -2;
+    private static final double minY = 0.8;
+    private static final double maxY = 0.3;
 
     private static final int MAX_ITERATIONS = 256;
     private static final int INFINITY = 16;
 
     private static final int WIDTH = 3840;
     private static final int HEIGHT = 2160;
+    private final int NUM_ROWS;
 
     private final int NUM_THREADS;
-    private final BufferedImage bi;
     private int rowStart;
+    private final BufferedImage bi;
 
-    public ParMandelRunnable(int rowStart, int NUM_THREADS, BufferedImage bi) {
-        this.rowStart = rowStart;
+    public ParMandelRunnable(int rowStart, int NUM_THREADS, int NUM_ROWS, BufferedImage bi) {
+        this.rowStart = rowStart * NUM_ROWS;
         this.NUM_THREADS = NUM_THREADS;
+        this.NUM_ROWS = NUM_ROWS;
         this.bi = bi;
     }
 
     @Override
     public void run() {
 
-        while (rowStart < WIDTH) {
-            for (int y = 0; y < HEIGHT; y++) {
-                double translatedX = minX + (rowStart * (maxX - minX)) / WIDTH;
-                double translatedY = minY + (y * (maxY - minY)) / HEIGHT;
-                double cx = translatedX;
-                double cy = translatedY;
-                int iterations = 0;
+        while (rowStart < HEIGHT) {
+            int xEnd = rowStart + NUM_ROWS;
 
-                while (iterations < MAX_ITERATIONS) {
-                    double trXX = translatedX * translatedX - translatedY * translatedY;
-                    double trYY = 2 * translatedX * translatedY;
+            for (int y = rowStart; y < xEnd && y < HEIGHT; y++) {
+                for (int x = 0; x < WIDTH; x++) {
+                    double translatedX = minX + x * (maxX - minX) / WIDTH;
+                    double translatedY = minY + y * (maxY - minY) / HEIGHT;
+                    double cx = translatedX;
+                    double cy = translatedY;
+                    int iterations = 0;
 
-                    translatedX = trXX + cx;
-                    translatedY = trYY + cy;
+                    while (iterations < MAX_ITERATIONS) {
+                        double trXX = translatedX * translatedX - translatedY * translatedY;
+                        double trYY = 2 * translatedX * translatedY;
 
-                    if (Math.abs(translatedX + translatedY) > INFINITY) {
-                        break;
+                        translatedX = trXX + cx;
+                        translatedY = trYY + cy;
+
+                        if (Math.abs(translatedX + translatedY) > INFINITY) {
+                            break;
+                        }
+
+                        ++iterations;
                     }
 
-                    ++iterations;
-                }
+                    // Maldelbrot test
+                    if (iterations >= MAX_ITERATIONS) {
+                        bi.setRGB(x, y, 0);
+                    } else {
+                        Color color = Color.getHSBColor(
+                                (float) iterations * 2.0f / (float) MAX_ITERATIONS, 1.0f, 1.0f
+                        );
 
-                // Maldelbrot test
-                if (iterations == MAX_ITERATIONS) {
-                    bi.setRGB(rowStart, y, 0);
-                } else {
-                    Color color = Color.getHSBColor(
-                            (float) iterations * 2.0f / (float) MAX_ITERATIONS, 1.0f, 1.0f
-                    );
-
-                    String hex = Integer.toHexString(color.getRGB()).substring(2);
-                    bi.setRGB(rowStart, y, Integer.parseInt(hex, 16));
+                        String hex = Integer.toHexString(color.getRGB()).substring(2);
+                        bi.setRGB(x, y, Integer.parseInt(hex, 16));
+                    }
                 }
             }
 
-            rowStart += NUM_THREADS;
+            rowStart += NUM_THREADS * NUM_ROWS;
         }
 
     }
