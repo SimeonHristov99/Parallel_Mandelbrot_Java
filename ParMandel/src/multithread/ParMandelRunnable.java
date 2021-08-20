@@ -1,7 +1,4 @@
-package miltithread;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
+package multithread;
 
 public class ParMandelRunnable implements Runnable {
     private static final double minX = -0.8;
@@ -10,31 +7,32 @@ public class ParMandelRunnable implements Runnable {
     private static final double minY = 0.8;
     private static final double maxY = 0.3;
 
-    private static final int MAX_ITERATIONS = 256;
+    private static final int MAX_ITERATIONS = 1000;
     private static final int INFINITY = 16;
 
-    private static final int WIDTH = 3840;
-    private static final int HEIGHT = 2160;
+    private final int WIDTH;
+    private final int HEIGHT;
+
     private final int NUM_ROWS;
-
     private final int NUM_THREADS;
-    private int rowStart;
-    private final BufferedImage bi;
 
-    public ParMandelRunnable(int rowStart, int NUM_THREADS, int NUM_ROWS, BufferedImage bi) {
+    private int rowStart;
+
+    public ParMandelRunnable(int rowStart, int NUM_THREADS, int NUM_ROWS, int HEIGHT, int WIDTH) {
         this.rowStart = rowStart * NUM_ROWS;
         this.NUM_THREADS = NUM_THREADS;
         this.NUM_ROWS = NUM_ROWS;
-        this.bi = bi;
+        this.HEIGHT = HEIGHT;
+        this.WIDTH = WIDTH;
     }
 
     @Override
     public void run() {
-
+//        long tik = System.nanoTime();
         while (rowStart < HEIGHT) {
-            int xEnd = rowStart + NUM_ROWS;
+            int yEnd = rowStart + NUM_ROWS;
 
-            for (int y = rowStart; y < xEnd && y < HEIGHT; y++) {
+            for (int y = rowStart; y < yEnd && y < HEIGHT; y++) {
                 for (int x = 0; x < WIDTH; x++) {
                     double translatedX = minX + x * (maxX - minX) / WIDTH;
                     double translatedY = minY + y * (maxY - minY) / HEIGHT;
@@ -55,23 +53,13 @@ public class ParMandelRunnable implements Runnable {
 
                         ++iterations;
                     }
-
-                    // Maldelbrot test
-                    if (iterations >= MAX_ITERATIONS) {
-                        bi.setRGB(x, y, 0);
-                    } else {
-                        Color color = Color.getHSBColor(
-                                (float) iterations * 2.0f / (float) MAX_ITERATIONS, 1.0f, 1.0f
-                        );
-
-                        String hex = Integer.toHexString(color.getRGB()).substring(2);
-                        bi.setRGB(x, y, Integer.parseInt(hex, 16));
-                    }
                 }
             }
 
             rowStart += NUM_THREADS * NUM_ROWS;
         }
+//        long tok = System.nanoTime();
 
+//        System.out.printf("\tt=%f\n", (double) (tok - tik) / 1_000_000_000);
     }
 }
