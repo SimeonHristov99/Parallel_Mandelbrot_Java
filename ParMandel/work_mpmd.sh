@@ -6,11 +6,11 @@ ps=(1 2 4 8)
 for c in "${cs[@]}"; do
   for g in "${gs[@]}"; do
     for p in "${ps[@]}"; do
-      ./runMe.sh $p $g $c
+      ./runMe_mpmd.sh $p $g $c
       sleep 5
-      ./runMe.sh $p $g $c
+      ./runMe_mpmd.sh $p $g $c
       sleep 5
-      ./runMe.sh $p $g $c
+      ./runMe_mpmd.sh $p $g $c
       sleep 5
     done
   done

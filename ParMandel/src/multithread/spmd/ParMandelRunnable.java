@@ -1,4 +1,4 @@
-package multithread;
+package multithread.spmd;
 
 public class ParMandelRunnable implements Runnable {
     private static final double minX = -0.8;
@@ -7,7 +7,7 @@ public class ParMandelRunnable implements Runnable {
     private static final double minY = 0.8;
     private static final double maxY = 0.3;
 
-    private static final int MAX_ITERATIONS = 1000;
+    private static final int MAX_ITERATIONS = 1024;
     private static final int INFINITY = 16;
 
     private final int WIDTH;
@@ -28,7 +28,7 @@ public class ParMandelRunnable implements Runnable {
 
     @Override
     public void run() {
-//        long tik = System.nanoTime();
+        long tik = System.nanoTime();
         while (rowStart < HEIGHT) {
             int yEnd = rowStart + NUM_ROWS;
 
@@ -58,8 +58,8 @@ public class ParMandelRunnable implements Runnable {
 
             rowStart += NUM_THREADS * NUM_ROWS;
         }
-//        long tok = System.nanoTime();
+        long tok = System.nanoTime();
 
-//        System.out.printf("\tt=%f\n", (double) (tok - tik) / 1_000_000_000);
+        System.out.printf("\tt=%f\n", (double) (tok - tik) / 1_000_000_000);
     }
 }

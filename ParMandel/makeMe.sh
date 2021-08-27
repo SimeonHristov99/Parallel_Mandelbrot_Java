@@ -2,4 +2,4 @@
 
 _CMD_JAVAC=`which javac`;
 
-$_CMD_JAVAC -cp ./out/production/ -d ./out/production/ src/multithread/*.java
+$_CMD_JAVAC -cp ./out/production/ -d ./out/production/ src/multithread/spmd/*.java

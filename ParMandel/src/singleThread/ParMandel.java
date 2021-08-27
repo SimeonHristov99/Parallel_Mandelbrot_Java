@@ -15,7 +15,7 @@ public class ParMandel {
 
     private static final int WIDTH = 3840;
     private static final int HEIGHT = 2160;
-    private static final int MAX_ITERATIONS = 256;
+    private static final int MAX_ITERATIONS = 1024;
     private static final int INFINITY = 16;
 
     public static void main(String[] args) {

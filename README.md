@@ -28,8 +28,8 @@ See `ParMandel/res.png`. Note that it is in 4K and will likely not fit in the wi
 - [X] use granularity
 - [X] add profiling
 - [X] add complexity as a command-line parameter
-- [ ] make one thread that starts `p - 1` other threads
-- [ ] write a master-slave version
+- [X] write a master-slave version
+- [X] upload paper (final version of the project)
 
 ## References:
  
